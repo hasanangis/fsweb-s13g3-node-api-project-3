@@ -44,13 +44,13 @@ router.put('/:id', validateUserId, validateUser, async (req, res, next) => {
 router.delete('/:id', validateUserId, async (req, res, next) => {
   try {
     await Users.remove(req.params.id);
-    res.json({ message: "kullanıcı silindi" });
+    res.json(req.user);
   } catch (error) {
     next(error);
   }
 });
 
-router.get('/:id/posts', validateUserId, validatePost, async (req, res, next) => {
+router.get('/:id/posts', validateUserId, async (req, res, next) => {
   try {
     const posts = await Users.getUserPosts(req.params.id);
     res.json(posts);
@@ -62,7 +62,7 @@ router.get('/:id/posts', validateUserId, validatePost, async (req, res, next) =>
 
 router.post('/:id/posts', validateUserId, validatePost, async (req, res, next) => {
   try {
-    const created = await Users.insert(req.params.id, { text: req.body.text });
+    const created = await Users.post(req.params.id, { text: req.body.text });
     res.status(200).json(created);
   } catch (error) {
     next(error);
